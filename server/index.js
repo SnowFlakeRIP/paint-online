@@ -22,7 +22,7 @@ app.ws('/', (ws, req) => {
 
 
 app.listen(PORT, () => {
-    console.log(`server has been started on port: ${PORT}`)
+    console.log(`server has been started onn port: ${PORT}`)
 })
 
 const connectionHandler = (ws, msg) => {
