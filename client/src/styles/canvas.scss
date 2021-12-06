@@ -5,9 +5,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background: url("../assets/img/back.jpg");
 }
 
 canvas{
   border:1px solid black;
   background-color: white;
 }
+
+.name_input{
+  border-radius:20px ;
+  border-color: #1debff;
+  width: 100%;
+}
+
+

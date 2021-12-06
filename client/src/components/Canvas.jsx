@@ -4,12 +4,15 @@ import {observer} from "mobx-react-lite";
 import canState from "../store/canState";
 import toolState from "../store/toolState";
 import Brush from "../tools/Brush";
-import {Button, Modal} from "react-bootstrap";
+import {Button, Col, Modal, Row, Toast} from "react-bootstrap";
 import {useParams} from "react-router-dom"
 import Rect from "../tools/Rect";
 import Circle from "../tools/Circle";
 import Eraser from "../tools/Eraser";
 import Line from "../tools/Line";
+import axios from "axios";
+import {logDOM} from "@testing-library/react";
+
 
 const Canvas = observer(() => {
 
@@ -17,9 +20,20 @@ const Canvas = observer(() => {
     const userNameRef = useRef()
     const [modal, setModal] = useState(true)
     const params = useParams()
-
+    const [showA, setShowA] = useState(true);
+    const toggleShowA = () => setShowA(!showA);
     useEffect(() => {
         canState.setCanvas(canvasRef.current)
+        let ctx = canvasRef.current.getContext('2d')
+        axios.get(`http://localhost:5000/image?id=${params.id}`).then(response => {
+            const img = new Image()
+            img.src = response.data
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
+                ctx.drawImage(img, 0, 0, canvasRef.current.width, canvasRef.current.height)
+
+            }
+        })
     }, [])
 
     useEffect(() => {
@@ -62,7 +76,7 @@ const Canvas = observer(() => {
         switch (figure.type) {
             case "brush":
                 console.log(msg)
-                Brush.draw(ctx, figure.x, figure.y, figure.color,figure.line_width)
+                Brush.draw(ctx, figure.x, figure.y, figure.color, figure.line_width)
                 break
             case "finish":
                 ctx.beginPath()
@@ -74,10 +88,10 @@ const Canvas = observer(() => {
                 Circle.staticDraw(ctx, figure.x, figure.y, figure.r, figure.fill_color, figure.stroke_color)
                 break
             case "eraser":
-                Eraser.staticDraw(ctx, figure.x, figure.y,figure.line_width)
+                Eraser.staticDraw(ctx, figure.x, figure.y, figure.line_width)
                 break
             case "line":
-                Line.staticDraw(ctx, figure.x, figure.y, figure.cx, figure.cy, figure.fill_color, figure.stroke_color,figure.line_width)
+                Line.staticDraw(ctx, figure.x, figure.y, figure.cx, figure.cy, figure.fill_color, figure.stroke_color, figure.line_width)
                 break
 
         }
@@ -86,6 +100,9 @@ const Canvas = observer(() => {
 
     const mouseDownHandler = () => {
         canState.pushToUndo(canvasRef.current.toDataURL())
+        axios.post(`http://localhost:5000/image?id=${params.id}`, {img: canvasRef.current.toDataURL()}).then(response => {
+            console.log(response.data)
+        })
     }
 
     return (
@@ -96,10 +113,10 @@ const Canvas = observer(() => {
                     <Modal.Title>Введите ваше имя</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <input type="text" ref={userNameRef}/>
+                    <input type="text" className='name_input' ref={userNameRef}/>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => connectionHandler()}>
+                    <Button variant="secondary" className="name_button" onClick={() => connectionHandler()}>
                         Войти
                     </Button>
                 </Modal.Footer>

@@ -4,7 +4,7 @@ import toolState from "../store/toolState";
 const SettingBar = () => {
     return (
         <div className='setting-bar ' >
-            <label htmlFor="line-width">Толщина линни</label>
+            <label style={{marginLeft:10}} htmlFor="line-width">Толщина линни</label>
             <input
                 id={"line-width"}
                 style={{margin:'0 10px'}}

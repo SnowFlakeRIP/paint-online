@@ -14,6 +14,17 @@ const Toolbar = () => {
         toolState.setStrokeColor(e.target.value)
         toolState.setFillColor(e.target.value)
     }
+
+    const download = () => {
+        const dataUrl = canState.canvas.toDataURL()
+        const a = document.createElement('a')
+        a.href = dataUrl
+        a.download = canState.sessionId + '.jpg'
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+    }
+
     return (
         <div className='toolbar'>
             <button className="toolbar_btn brush"
@@ -29,7 +40,7 @@ const Toolbar = () => {
             <input type="color" onChange={e => changeColor(e)} style={{marginLeft: 10}}/>
             <button className="toolbar_btn undo" onClick={() => canState.undo()}/>
             <button className="toolbar_btn redo" onClick={() => canState.redo()}/>
-            <button className="toolbar_btn save"/>
+            <button className="toolbar_btn save" onClick={() => download()}/>
         </div>
     );
 };
