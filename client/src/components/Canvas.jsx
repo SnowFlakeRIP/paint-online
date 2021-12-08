@@ -25,7 +25,7 @@ const Canvas = observer(() => {
     useEffect(() => {
         canState.setCanvas(canvasRef.current)
         let ctx = canvasRef.current.getContext('2d')
-        axios.get(`http://localhost:5000/image?id=${params.id}`).then(response => {
+        axios.get(`http://92.53.102.254:5000/image?id=${params.id}`).then(response => {
             const img = new Image()
             img.src = response.data
             img.onload = () => {
@@ -100,7 +100,7 @@ const Canvas = observer(() => {
 
     const mouseDownHandler = () => {
         canState.pushToUndo(canvasRef.current.toDataURL())
-        axios.post(`http://localhost:5000/image?id=${params.id}`, {img: canvasRef.current.toDataURL()}).then(response => {
+        axios.post(`http://92.53.102.254:5000/image?id=${params.id}`, {img: canvasRef.current.toDataURL()}).then(response => {
             console.log(response.data)
         })
     }
